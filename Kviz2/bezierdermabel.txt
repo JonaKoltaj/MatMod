@@ -1,0 +1,17 @@
+unction k = curvature(b, t)
+  db  = bezier_derivative(b);
+  ddb = bezier_derivative(db);
+
+  dx  = deCasteljau(db(1, :), t);
+  dy  = deCasteljau(db(2, :), t);
+  ddx = deCasteljau(ddb(1, :), t);
+  ddy = deCasteljau(ddb(2, :), t);
+
+  expr1 = dx * ddy - dy * ddx;
+  expr2 = sqrt(dx^2 + dy^2)^3;
+  k = expr1 / expr2; 
+
+
+function db = bezier_derivative(b)
+  n = length(b) - 1;
+  db = n * (b(:, 2:end) - b(:, 1:end-1));
