@@ -8,7 +8,6 @@ function z = F_uv(w,obesisceL,obesisceD,L,vsote_mi)
 % vsote_mi = [0,mi_1,mi_1+mi_2,...] je vektor delnih vsot mi-jev.
 u = w(1);
 v = w(2);
-%ocitno mi tuki negativno pride pod korenom
 ksi = L./sqrt(1+(v-u.*vsote_mi).^2);
 eta = ksi.*(v-u.*vsote_mi);
 U = sum(ksi) - obesisceD(1) + obesisceL(1);
