@@ -13,9 +13,8 @@ u0 = - 0.3;
 % desni = [1;-2];
 % sx = desni(1)/2;
 % sy = desni(2)/2;
-% li = norm(desni);
 % v0 = [0;-1];
-% v = odbojniKot(v0,li,[0;0],desni)
+% v = odbojnaHitrost(v0,[0;0],desni)
 % figure
 % hold on
 % plot([0,desni(1)],[0,desni(2)],'b')
