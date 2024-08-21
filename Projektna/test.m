@@ -1,23 +1,27 @@
-L = [1 2 1 2 2 1 2 1];
-M = [1 1 1 1 1 1 1 1];
+L = [1 2 2 1];
+M = [1 1 1 1];
 Xstart = [0;0];
-Xend = [10;0];
+Xend = [5;0];
 u0 = - 0.3;
 
-% X = diskrVeriznica(u0,Xstart,Xend,L,M);
-% risiDiskretno(X)
+X = diskrVeriznica(u0,Xstart,Xend,L,M);
+risiDiskretno(X)
+
+levi = X(:,1);
+desni = X(:,2);
+v0 = [0;-1];
+x0 = (X(1,1)+X(1,2))/2;
+y0 = (X(2,1)+X(2,2))/2;
 
 
-%funkcija odbojni kot deluje ce smo na desnih kvadrantih, zato kr sm
-%implicitno settala levga na [0;0] in gremo itak vedno od leve proti desni
-% desni = [1;-2];
-% sx = desni(1)/2;
-% sy = desni(2)/2;
-% v0 = [0;-1];
-% v = odbojnaHitrost(v0,[0;0],desni)
-% figure
-% hold on
-% plot([0,desni(1)],[0,desni(2)],'b')
-% plot([sx,-v0(1)+sx],[sy,-v0(2)+sy],'r')
-% plot([sx,v(1)+sx],[sy,v(2)+sy],'g')
-% axis equal
+%zdej ti ful grdo izrisuje te puscice, dej to spremen pa also dej nared
+%funkcijo za n odbojev (kinda easy), pol pa nared da ti outputta tisti n pr
+%katermu se ustav, ce umes ze odleti out of bounds
+% risiOdbojnoHitrost(v0,levi,desni,x0,y0)
+[v1,x1,y1] = enOdboj(X,v0,x0,y0);
+[v2,x2,y2] = enOdboj(X,v1,x1,y1);
+[v3,x3,y3] = enOdboj(X,v2,x2,y2);
+[v4,x4,y4] = enOdboj(X,v3,x3,y3);
+[v5,x5,y5] = enOdboj(X,v4,x4,y4);
+[v6,x6,y6] = enOdboj(X,v5,x5,y5); %hmm kle je nek problem kam gre hitrost
+

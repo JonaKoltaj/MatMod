@@ -13,29 +13,49 @@ vOdboj = odbojnaHitrost(v0,Xlevi,Xdesni);
 k = @(levi,desni) (desni(2)-levi(2))./(desni(1)-levi(1));
 p = @(x,levi,desni) k(levi,desni).*(x-levi(1))+levi(2);
 
-trenutni_x = x0;
-for i = 1:length(X)
-    if i<=length(X)-1
-        while trenutni_x <= X(1,i+1) %smo na odseku xiyi do xi+1yi+1
-            if v0(1) ~= 0
-                %njena nicla bo obstajala, uprasanje samo ce je within the
-                %bounds levga in desnega
-                fun = @(x) p(x,X(:,i),X(:,i+1)) - posevniMet(v0,x0,y0,x);
-                x_presek = fzero(fun,x0);
-                if (X(1,i) <= x_presek) && (x_presek <= X(1,i+1))
-                    v = posevniMetv(v0,x_presek,x0)
-                    x = x_presek
-                    y = p(x_presek,X(:,i),X(:,i+1))
-                else
-                trenutni_x = X(1,i+1)
-            else
-                %preverimo ali je p(x0) med levim in desnim (itak je sam
-                %navpicna premica at this point)
+x = x0;
+if vOdboj(1) == 0
+    % Smo v navpičnem metu in žogica pride nazaj z isto hitrostjo v
+    % obratni smeri. Primer kjer bi se žogica odbila navpično navzdol se
+    % tako ali tako ne zgodi.
+    v = [vOdboj(0); - vOdboj(1)];
+    x = x0;
+    y = y0;
+else
+    for i = 1:length(X)
+        if i<=length(X)-1
+            % Za vsak i smo na odseku [x_i;y_i] do [x_i;y_i].
+            fun = @(x) p(x,X(:,i),X(:,i+1)) - posevniMet(vOdboj,x0,y0,x);
+            % Njena nicla bo obstajala, vprasanje je samo če je within
+            % the bounds levga in desnega.
+            % Ker ima funkcija lahko dva potencialna preseka,
+            % vzamemo dva možna začetna približka.
+            x_presek1 = fzero(fun,X(1,i));
+            x_presek2 = fzero(fun,X(1,i+1));
+            if (X(1,i) <= x_presek1) && (x_presek1 <= X(1,i+1)) && (x_presek1 - x0 > 0.001)
+                v = posevniMetv(vOdboj,x_presek1,x0);
+                x = x_presek1;
+                y = p(x_presek1,X(:,i),X(:,i+1));
+                risi
+            elseif (X(1,i) <= x_presek2) && (x_presek2 <= X(1,i+1)) && (x_presek2 - x0 > 0.001)
+                v = posevniMetv(vOdboj,x_presek2,x0);
+                x = x_presek2;
+                y = p(x_presek2,X(:,i),X(:,i+1));
+            end
+        else
+            % Torej ce nismo prisli do drugih x-ov, y-ov v nobenem od
+            % prejsnjih instancev.
+            if x == x0
+                % Žogica se odbije predaleč in ne zadane več verižnice, zato se
+                % ustavimo malo dlje kot pri zadnjem spoju.
+                v = posevniMetv(vOdboj, X(1,end)+1, x0);
+                x = X(1,end) + 1;
+                y = posevniMet(vOdboj,x0,y0,X(1,end) + 1);
             end
         end
-    else
-        %nismo nasl nicle in se torej ne odbije se enkrat (karkol naj to
-        %vrne)
     end
 end
 
+xvekt = linspace(x0,x);
+plot(x,y,'magenta x')
+plot(xvekt,posevniMet(vOdboj,x0,y0,xvekt))
