@@ -1,4 +1,4 @@
-unction k = curvature(b, t)
+function k = curvature(b, t)
   db  = bezier_derivative(b);
   ddb = bezier_derivative(db);
 

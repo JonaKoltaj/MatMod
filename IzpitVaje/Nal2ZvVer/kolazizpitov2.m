@@ -31,5 +31,13 @@ minkotx = fminbnd(fun,T1(1),T2(1));
 % plot([minkotx T2(1)], [w(minkotx) T2(2)])
 
 %2.4
-
-
+p1 = @(x) tangenta(w,T1(1),T1(2),x);
+p2 = @(x) tangenta(w,T2(1),T2(2),x);
+p3 = @(x) tangenta(w,3,w(3),x);
+syms t
+eq =  p1(t) == p3(t);
+gmin = solve(eq,t);
+% plot(gmin,p1(gmin),'x')
+% plot(x,p1(x))
+% plot(x,p3(x))
+razlika = abs(P(2) - p1(gmin));
