@@ -23,5 +23,5 @@ y0 = (X(2,1)+X(2,2))/2;
 [v3,x3,y3] = enOdboj(X,v2,x2,y2);
 [v4,x4,y4] = enOdboj(X,v3,x3,y3);
 [v5,x5,y5] = enOdboj(X,v4,x4,y4);
-% [v6,x6,y6] = enOdboj(X,v5,x5,y5); %hmm kle je nek problem kam gre hitrost
+[v6,x6,y6] = enOdboj(X,v5,x5,y5); %hmm kle je nek problem kam gre hitrost
 
