@@ -1,4 +1,5 @@
 function risiDiskretno(X)
+% Pomožna funkcija, ki izriše diskretno verižnico.
 figure
 hold on
 n = length(X) - 2;
