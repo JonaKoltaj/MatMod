@@ -8,7 +8,7 @@ function [v,x,y] = enOdboj(X,v0,x0,y0)
 idx = find(X(1,:) <= x0, 1, 'last');
 Xlevi = X(:,idx);
 Xdesni = X(:,(idx+1));
-vOdboj = odbojnaHitrost(v0,Xlevi,Xdesni);
+vOdboj = odbojnaHitrostMatrika(v0,Xlevi,Xdesni);
 
 k = @(levi,desni) (desni(2)-levi(2))./(desni(1)-levi(1));
 p = @(x,levi,desni) k(levi,desni).*(x-levi(1))+levi(2);
@@ -25,20 +25,35 @@ if vOdboj(1) == 0
 else
     for i = 1:length(X)
         if i<=length(X)-1
-            % Za vsak i smo na odseku [x_i;y_i] do [x_i;y_i].
-            fun = @(x) p(x,X(:,i),X(:,i+1)) - posevniMet(vOdboj,x0,y0,x);
-            % Njena nicla bo obstajala, vprasanje je samo če je within
-            % the bounds levga in desnega.
-            % Ker ima funkcija lahko dva potencialna preseka,
-            % vzamemo dva možna začetna približka.
-            x_presek1 = fzero(fun,X(1,i));
-            x_presek2 = fzero(fun,X(1,i+1));
-            if (X(1,i) <= x_presek1) && (x_presek1 <= X(1,i+1)) && (x_presek1 - x0 > 0.001)
+
+	    vx = vOdboj(1);
+	    vy = vOdboj(2);
+	    g = 9.81;
+	    xi1 = X(1, i);
+	    xi2 = X(2, i);
+	    ki = k(X(:, i), X(:, i+1));
+
+  	    D = sqrt(ki^2*vx^2 - 2*ki*vx*vy - 2*g*ki*x0 + 2*g*ki*xi1 + vy^2 - 2*g*xi2 + 2*g*y0)*vx;
+  	    x_presek1 = -(ki*vx^2 - vx*vy - g*x0 + D)/g;
+  	    x_presek2 = -(ki*vx^2 - vx*vy - g*x0 - D)/g;
+
+	    %% V primeru da presečišče iščemo na palici, od katere smo se odbili, je ena od ničel gotovo
+	    %% enaka x0. Obe ničli nastavimo na tisto, ki ni enaka x0.
+
+	    if i == idx
+	      if x_presek2 == x0
+		x_presek2 = x_presek1;
+	      else
+		x_presek1 = x_presek2;
+	      end
+	    end
+
+            if (X(1,i) <= x_presek1) && (x_presek1 <= X(1,i+1))
                 v = posevniMetv(vOdboj,x_presek1,x0);
                 x = x_presek1;
                 y = p(x_presek1,X(:,i),X(:,i+1));
                 % risiOdbojnoHitrost(v,X(:,i),X(:,i+1),x,y)
-            elseif (X(1,i) <= x_presek2) && (x_presek2 <= X(1,i+1)) && (x_presek2 - x0 > 0.001)
+            elseif (X(1,i) <= x_presek2) && (x_presek2 <= X(1,i+1))
                 v = posevniMetv(vOdboj,x_presek2,x0);
                 x = x_presek2;
                 y = p(x_presek2,X(:,i),X(:,i+1));
